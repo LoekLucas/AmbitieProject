@@ -4,7 +4,10 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - tpSurface
+  - TeleportTrigger1
+  - Layer 3
+  - Layer 2
+  - Layer 1
   layers:
   - Default
   - TransparentFX

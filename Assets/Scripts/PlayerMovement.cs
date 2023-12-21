@@ -7,9 +7,13 @@ using System.Xml.Schema;
 public class PlayerMovement : MonoBehaviour
 {
     // Variables and the like
+    
 
     [SerializeField] private float walkSpeed = 5f;
     [SerializeField] private float runSpeed = 7f;
+    [SerializeField] IsVisible IsVisible;
+    [SerializeField] IsVisible IsVisible2;
+
 
     private Vector3 moveDirection;
     private Vector3 moveDirectionZ;
@@ -19,11 +23,16 @@ public class PlayerMovement : MonoBehaviour
     private float gravityValue = -9.81f;
     private float jumpHeight = 3f;
     public float timesDoubleJumped = 0f;
-    private float tpDistance = 1000f;
+    private float tpDistance;
     private bool playerUp = false;
-    private float playerLayer;
+    public float playerLayerNew;
+    public float playerLayer = 1;
+    private bool isColliding;
+    private bool tpAllowed = true;
 
     private CharacterController characterController;
+    public GameObject removeableCube;
+    public GameObject removeableFloor;
 
     // Start is called before the first frame update
 
@@ -36,7 +45,10 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        Move();;
+        Move();
+
+        tpDistance = playerLayer * 1000;
+        isColliding = false;
     }
 
     private void Move()
@@ -89,7 +101,7 @@ public class PlayerMovement : MonoBehaviour
             velocity.y += gravityValue * Time.deltaTime;
         }
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(1) && tpAllowed)
         {
             if (!playerUp)
             {
@@ -109,7 +121,7 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
-    private void OnTriggerEnter(Collider collision)
+    private void OnTriggerStay(Collider collision)
     {
         string tag = collision.gameObject.tag;
 
@@ -117,28 +129,39 @@ public class PlayerMovement : MonoBehaviour
         {
             string numericPart = tag.Substring("Layer ".Length);
 
-            if (float.TryParse(numericPart, out playerLayer))
+            if (float.TryParse(numericPart, out playerLayerNew))
             {
-                Debug.Log("Player Layer: " + playerLayer);
-            }
-            else
-            {
-                Debug.LogError("Failed to parse layer value from tag: " + tag);
+                if (playerLayer < playerLayerNew)
+                {
+                    playerLayer = playerLayerNew;
+                }
             }
         }
-        else
+
+
+        if (tag == "TeleportTrigger1" && IsVisible.objectVisible == false)
         {
-            Debug.LogWarning("Tag does not start with 'Layer ': " + tag);
+            if (isColliding) return;
+            isColliding = true;
+            TeleportPlayer(new Vector3(transform.position.x, transform.position.y + 1000, transform.position.z));
+
         }
 
-        if (tag == "TeleportTrigger1")
+        if (tag == "Layer 2" && IsVisible2.objectVisible == false)
         {
-
+            GameObject.Destroy(removeableCube);
+            GameObject.Destroy(removeableFloor, 5f);
+            tpAllowed = false;
+            // Add a 5 sec delay here
+            TeleportPlayer(new Vector3(0, 7.5f, 0));
+            playerLayer = 1;
+            tpAllowed = true;
         }
     }
 
     // Make it so playerLayer only changes when new layer is higher than old
     // This would allow for me to make a formula that dictates teleport distance dynamically
+
 
     private void Walk()
     {
@@ -160,7 +183,9 @@ public class PlayerMovement : MonoBehaviour
     private void TeleportPlayer(Vector3 location)
     {
         characterController.enabled = false;
-        transform.position = location;
+        Quaternion savedRotation = transform.rotation;
+        transform.SetPositionAndRotation(location, savedRotation);
+
         characterController.enabled = true;
     }
 }
