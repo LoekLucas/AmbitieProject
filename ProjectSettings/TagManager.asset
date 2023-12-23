@@ -8,6 +8,9 @@ TagManager:
   - Layer 3
   - Layer 2
   - Layer 1
+  - tpSurface
+  - TeleportTrigger2
+  - TeleportTrigger3
   layers:
   - Default
   - TransparentFX

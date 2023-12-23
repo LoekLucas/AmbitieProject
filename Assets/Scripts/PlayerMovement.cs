@@ -29,6 +29,8 @@ public class PlayerMovement : MonoBehaviour
     public float playerLayer = 1;
     private bool isColliding;
     private bool tpAllowed = true;
+    public bool floorRemoveAllow = true;
+    public float internalTimer;
 
     private CharacterController characterController;
     public GameObject removeableCube;
@@ -152,10 +154,34 @@ public class PlayerMovement : MonoBehaviour
             GameObject.Destroy(removeableCube);
             GameObject.Destroy(removeableFloor, 5f);
             tpAllowed = false;
-            // Add a 5 sec delay here
-            TeleportPlayer(new Vector3(0, 7.5f, 0));
-            playerLayer = 1;
-            tpAllowed = true;
+            if (internalTimer < 18)
+            {
+                internalTimer += Time.deltaTime;
+            }
+
+            if (internalTimer >= 18)
+            {
+                TeleportPlayer(new Vector3(0, 3007.5f, 0));
+                playerLayer = 1;
+                tpAllowed = true;
+                playerUp = false;
+                playerLayer = 1;
+            }
+        }
+    }
+
+    private void OnTriggerEnter(Collider collision)
+    {
+        string tag = collision.gameObject.tag;
+
+        if (tag == "TeleportTrigger2")
+        {
+            TeleportPlayer(new Vector3(transform.position.x, transform.position.y + 1000, transform.position.z));
+        }
+
+        else if (tag == "TeleportTrigger3")
+        {
+            TeleportPlayer(new Vector3(transform.position.x, transform.position.y - 1000, transform.position.z));
         }
     }
 
