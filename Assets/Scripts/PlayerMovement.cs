@@ -6,13 +6,15 @@ using System.Xml.Schema;
 
 public class PlayerMovement : MonoBehaviour
 {
-    // Variables and the like
-    
+    #region Variables and the like
+
 
     [SerializeField] private float walkSpeed = 5f;
     [SerializeField] private float runSpeed = 7f;
     [SerializeField] IsVisible IsVisible;
     [SerializeField] IsVisible IsVisible2;
+    [SerializeField] IsVisible IsVisible3;
+    [SerializeField] IsVisible IsVisible4;
 
 
     private Vector3 moveDirection;
@@ -31,19 +33,22 @@ public class PlayerMovement : MonoBehaviour
     private bool tpAllowed = true;
     public bool floorRemoveAllow = true;
     public float internalTimer;
+    public float loops = 0;
+    private bool allowLoopCount;
+    private bool allowTimer = true;
+    private bool hasTeleported = false;
 
     private CharacterController characterController;
     public GameObject removeableCube;
     public GameObject removeableFloor;
 
-    // Start is called before the first frame update
+    #endregion
 
+    #region Start and update
     void Start()
     {
         characterController = GetComponent<CharacterController>();
     }
-
-    // Update is called once per frame
 
     void Update()
     {
@@ -52,11 +57,13 @@ public class PlayerMovement : MonoBehaviour
         tpDistance = playerLayer * 1000;
         isColliding = false;
     }
+    #endregion
 
+    #region Movement
     private void Move()
     {
 
-        if (characterController.isGrounded && velocity.y < 0) //?
+        if (characterController.isGrounded && velocity.y < 0)
         {
             velocity.y = -2f;
         }
@@ -79,30 +86,8 @@ public class PlayerMovement : MonoBehaviour
             Run();
         }
 
-        if (timesDoubleJumped <= 1f && (!Input.GetKey(KeyCode.Mouse4)))
-        {
-
-            if (Input.GetButtonDown("Jump"))
-            {
-                Jump();
-            }
-
-            if (moveDirection != Vector3.zero)
-            {
-                Idle();
-            }
-        }
-
-        if (characterController.isGrounded)
-        {
-            timesDoubleJumped = 0;
-        }
-
-        else
-        {
-            velocity.y += gravityValue * Time.deltaTime;
-        }
-
+        velocity.y += gravityValue * Time.deltaTime;
+        
         if (Input.GetMouseButtonDown(1) && tpAllowed)
         {
             if (!playerUp)
@@ -122,7 +107,9 @@ public class PlayerMovement : MonoBehaviour
         characterController.Move(moveDirection * Time.deltaTime);
 
     }
+    #endregion
 
+    #region Triggers
     private void OnTriggerStay(Collider collision)
     {
         string tag = collision.gameObject.tag;
@@ -154,7 +141,7 @@ public class PlayerMovement : MonoBehaviour
             GameObject.Destroy(removeableCube);
             GameObject.Destroy(removeableFloor, 5f);
             tpAllowed = false;
-            if (internalTimer < 18)
+            if (internalTimer < 18 && allowTimer)
             {
                 internalTimer += Time.deltaTime;
             }
@@ -166,29 +153,40 @@ public class PlayerMovement : MonoBehaviour
                 tpAllowed = true;
                 playerUp = false;
                 playerLayer = 1;
+                allowTimer = false;
+                internalTimer = 0;
             }
         }
+
+        if (tag == "TeleportTrigger2")
+        {
+            tpAllowed = false;
+            if (isColliding) return;
+            isColliding = true;
+            TeleportPlayer(new Vector3(transform.position.x, transform.position.y + 1000, transform.position.z));
+        }
+
     }
 
     private void OnTriggerEnter(Collider collision)
     {
         string tag = collision.gameObject.tag;
 
-        if (tag == "TeleportTrigger2")
+        if (tag == "LoopCounter" && !hasTeleported)
         {
-            TeleportPlayer(new Vector3(transform.position.x, transform.position.y + 1000, transform.position.z));
-        }
+            loops++;
 
-        else if (tag == "TeleportTrigger3")
-        {
-            TeleportPlayer(new Vector3(transform.position.x, transform.position.y - 1000, transform.position.z));
+            if (loops >= 5)
+            {
+                TeleportPlayer(new Vector3(transform.position.x, transform.position.y + 1000, transform.position.z));
+                isColliding = false;
+                hasTeleported = true; // Set the flag to true to prevent further teleportation
+            }
         }
     }
+    #endregion
 
-    // Make it so playerLayer only changes when new layer is higher than old
-    // This would allow for me to make a formula that dictates teleport distance dynamically
-
-
+    #region Functions
     private void Walk()
     {
         moveDirection *= walkSpeed;
@@ -214,4 +212,5 @@ public class PlayerMovement : MonoBehaviour
 
         characterController.enabled = true;
     }
+    #endregion
 }

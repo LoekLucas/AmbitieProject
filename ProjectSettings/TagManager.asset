@@ -11,6 +11,9 @@ TagManager:
   - tpSurface
   - TeleportTrigger2
   - TeleportTrigger3
+  - Layer 4
+  - Layer 5
+  - LoopCounter
   layers:
   - Default
   - TransparentFX

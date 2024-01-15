@@ -19,7 +19,6 @@ public class IsVisible : MonoBehaviour
         if (m_Renderer.isVisible)
         {
             objectVisible = true;
-            //Debug.Log("Object is visible");
         }
         else
         {
