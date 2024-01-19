@@ -15,6 +15,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] IsVisible IsVisible2;
     [SerializeField] IsVisible IsVisible3;
     [SerializeField] IsVisible IsVisible4;
+    [SerializeField] IsVisible IsVisible5;
+    [SerializeField] IsVisible IsVisible6;
+    [SerializeField] IsVisible IsVisible7;
+    [SerializeField] IsVisible IsVisible8;
 
 
     private Vector3 moveDirection;
@@ -37,10 +41,22 @@ public class PlayerMovement : MonoBehaviour
     private bool allowLoopCount;
     private bool allowTimer = true;
     private bool hasTeleported = false;
+    private float TeleportDelay = 0;
+
+    public bool isVisible4Exists = true;
+    public bool isVisible5Exists = true;
+    public bool isVisible6Exists = true;
+    public bool isVisible7Exists = true;
+    public bool isVisible8Exists = true;
 
     private CharacterController characterController;
     public GameObject removeableCube;
     public GameObject removeableFloor;
+    public GameObject removeableCube2;
+    public GameObject removeableCube3;
+    public GameObject removeableCube4;
+    public GameObject removeableCube5;
+    public GameObject removeableCube6;
 
     #endregion
 
@@ -155,6 +171,54 @@ public class PlayerMovement : MonoBehaviour
                 playerLayer = 1;
                 allowTimer = false;
                 internalTimer = 0;
+            }
+        }
+
+        if (tag == "Layer 3")
+        {
+            tpAllowed = false;
+
+            if (IsVisible4.objectVisible == false && isVisible4Exists)
+            {
+                isVisible4Exists = false;
+                GameObject.Destroy(removeableCube2);
+                TeleportDelay++;
+            }
+
+            if (IsVisible5.objectVisible == false && isVisible5Exists)
+            {
+                isVisible5Exists = false;
+                GameObject.Destroy(removeableCube3);
+                TeleportDelay++;
+            }
+
+            if (IsVisible6.objectVisible == false && isVisible6Exists)
+            {
+                isVisible6Exists = false;
+                GameObject.Destroy(removeableCube4);
+                TeleportDelay++;
+            }
+
+            if (IsVisible7.objectVisible == false && isVisible7Exists)
+            {
+                isVisible7Exists = false;
+                GameObject.Destroy(removeableCube5);
+                TeleportDelay++;
+            }
+
+            if (IsVisible8.objectVisible == false && isVisible8Exists || IsVisible5.objectVisible && isVisible8Exists)
+            {
+                isVisible8Exists = false;
+                GameObject.Destroy(removeableCube6);
+                TeleportDelay++;
+            }
+
+
+            if (IsVisible3.objectVisible == false && TeleportDelay >= 5)
+            {
+                if (isColliding) return;
+                isColliding = true;
+                TeleportPlayer(new Vector3(transform.position.x, transform.position.y + 1000, transform.position.z));
             }
         }
 
