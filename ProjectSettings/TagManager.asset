@@ -14,6 +14,11 @@ TagManager:
   - Layer 4
   - Layer 5
   - LoopCounter
+  - Last Layer
+  - First TP Check
+  - Bright Choice
+  - Dark Choice
+  - Key
   layers:
   - Default
   - TransparentFX

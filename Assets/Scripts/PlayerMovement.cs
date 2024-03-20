@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using System.Xml.Schema;
+using Unity.VisualScripting;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -19,6 +20,32 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] IsVisible IsVisible6;
     [SerializeField] IsVisible IsVisible7;
     [SerializeField] IsVisible IsVisible8;
+    [SerializeField] IsVisible IsVisible9;
+    [SerializeField] IsVisible IsVisible10;
+    [SerializeField] IsVisible IsVisible11;
+    [SerializeField] IsVisible IsVisible12;
+    [SerializeField] IsVisible IsVisible13;
+    [SerializeField] IsVisible IsVisible14;
+    [SerializeField] IsVisible IsVisible15;
+    [SerializeField] IsVisible IsVisible16;
+
+    public GameObject removeableCube;
+    public GameObject removeableFloor;
+    public GameObject removeableCube2;
+    public GameObject removeableCube3;
+    public GameObject removeableCube4;
+    public GameObject removeableCube5;
+    public GameObject removeableCube6;
+    public GameObject removeableCube7;
+    public GameObject removeableCube8;
+    public GameObject removeableCube9;
+    public GameObject removeableCube10;
+    public GameObject removeableCube11;
+    public GameObject removeableCube12;
+    public GameObject removeableCube13;
+    public GameObject removeableCube14;
+
+
 
 
     private Vector3 moveDirection;
@@ -27,8 +54,6 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 velocity;
 
     private float gravityValue = -9.81f;
-    private float jumpHeight = 3f;
-    public float timesDoubleJumped = 0f;
     private float tpDistance;
     private bool playerUp = false;
     public float playerLayerNew;
@@ -38,10 +63,11 @@ public class PlayerMovement : MonoBehaviour
     public bool floorRemoveAllow = true;
     public float internalTimer;
     public float loops = 0;
-    private bool allowLoopCount;
     private bool allowTimer = true;
     private bool hasTeleported = false;
     private float TeleportDelay = 0;
+    private bool choseBrightLayer;
+    public bool hasKey = false;
 
     public bool isVisible4Exists = true;
     public bool isVisible5Exists = true;
@@ -50,13 +76,6 @@ public class PlayerMovement : MonoBehaviour
     public bool isVisible8Exists = true;
 
     private CharacterController characterController;
-    public GameObject removeableCube;
-    public GameObject removeableFloor;
-    public GameObject removeableCube2;
-    public GameObject removeableCube3;
-    public GameObject removeableCube4;
-    public GameObject removeableCube5;
-    public GameObject removeableCube6;
 
     #endregion
 
@@ -70,7 +89,15 @@ public class PlayerMovement : MonoBehaviour
     {
         Move();
 
-        tpDistance = playerLayer * 1000;
+        if (choseBrightLayer)
+        {
+            tpDistance = playerLayer * -1000;
+        }
+
+        else
+        { 
+            tpDistance = playerLayer * 1000;
+        }
         isColliding = false;
     }
     #endregion
@@ -143,8 +170,13 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
+        if (tag == "First TP Check")
+        {
+            GameObject.Destroy(removeableCube12);
+        }
 
-        if (tag == "TeleportTrigger1" && IsVisible.objectVisible == false)
+        #region Dark Layer choice
+        if (tag == "Dark Choice" && IsVisible.objectVisible == false)
         {
             if (isColliding) return;
             isColliding = true;
@@ -152,6 +184,7 @@ public class PlayerMovement : MonoBehaviour
 
         }
 
+        #region Big white cube fall
         if (tag == "Layer 2" && IsVisible2.objectVisible == false)
         {
             GameObject.Destroy(removeableCube);
@@ -172,8 +205,61 @@ public class PlayerMovement : MonoBehaviour
                 allowTimer = false;
                 internalTimer = 0;
             }
-        }
 
+            #region Transition to gray
+            if (tag == "Layer 3")
+            {
+                tpAllowed = false;
+
+                if (IsVisible4.objectVisible == false && isVisible4Exists)
+                {
+                    isVisible4Exists = false;
+                    GameObject.Destroy(removeableCube2);
+                    TeleportDelay++;
+                }
+
+                if (IsVisible5.objectVisible == false && isVisible5Exists)
+                {
+                    isVisible5Exists = false;
+                    GameObject.Destroy(removeableCube3);
+                    TeleportDelay++;
+                }
+
+                if (IsVisible6.objectVisible == false && isVisible6Exists)
+                {
+                    isVisible6Exists = false;
+                    GameObject.Destroy(removeableCube4);
+                    TeleportDelay++;
+                }
+
+                if (IsVisible7.objectVisible == false && isVisible7Exists)
+                {
+                    isVisible7Exists = false;
+                    GameObject.Destroy(removeableCube5);
+                    TeleportDelay++;
+                }
+
+                if (IsVisible8.objectVisible == false && isVisible8Exists || IsVisible5.objectVisible && isVisible8Exists)
+                {
+                    isVisible8Exists = false;
+                    GameObject.Destroy(removeableCube6);
+                    TeleportDelay++;
+                }
+
+
+                if (IsVisible3.objectVisible == false && TeleportDelay >= 5)
+                {
+                    if (isColliding) return;
+                    isColliding = true;
+                    TeleportPlayer(new Vector3(transform.position.x, transform.position.y + 1000, transform.position.z));
+                }
+            }
+            #endregion
+
+        }
+        #endregion
+
+        #region Transition to gray
         if (tag == "Layer 3")
         {
             tpAllowed = false;
@@ -221,7 +307,43 @@ public class PlayerMovement : MonoBehaviour
                 TeleportPlayer(new Vector3(transform.position.x, transform.position.y + 1000, transform.position.z));
             }
         }
+        #endregion
 
+        #region Removing walls on last Layer
+        if (tag == "Last Layer")
+        {
+            internalTimer += Time.deltaTime;
+            if (internalTimer >= 10)
+            {
+                if (IsVisible9.objectVisible == false)
+                {
+                    GameObject.Destroy(removeableCube7);
+                }
+
+                if (IsVisible10.objectVisible == false)
+                {
+                    GameObject.Destroy(removeableCube8);
+                }
+
+                if (IsVisible11.objectVisible == false)
+                {
+                    GameObject.Destroy(removeableCube9);
+                }
+
+                if (IsVisible12.objectVisible == false)
+                {
+                    GameObject.Destroy(removeableCube10);
+                }
+
+                if (IsVisible13.objectVisible == false)
+                {
+                    GameObject.Destroy(removeableCube11);
+                }
+            }
+        }
+        #endregion
+
+        #region TP to loop
         if (tag == "TeleportTrigger2")
         {
             tpAllowed = false;
@@ -229,6 +351,28 @@ public class PlayerMovement : MonoBehaviour
             isColliding = true;
             TeleportPlayer(new Vector3(transform.position.x, transform.position.y + 1000, transform.position.z));
         }
+        #endregion
+
+        #endregion
+
+        #region Bright layer choice
+        if (tag == "Bright Choice" && IsVisible14.objectVisible == false)
+        {
+            choseBrightLayer = true;
+            if (isColliding) return;
+            isColliding = true;
+            TeleportPlayer(new Vector3(transform.position.x, transform.position.y - 1000, transform.position.z));
+        }
+
+        #region Key
+        if (tag == "Key")
+        {
+            hasKey = true;
+            GameObject.Destroy(removeableCube14);
+        }
+        #endregion
+
+        #endregion
 
     }
 
@@ -236,6 +380,7 @@ public class PlayerMovement : MonoBehaviour
     {
         string tag = collision.gameObject.tag;
 
+        #region Loop Counter
         if (tag == "LoopCounter" && !hasTeleported)
         {
             loops++;
@@ -247,6 +392,7 @@ public class PlayerMovement : MonoBehaviour
                 hasTeleported = true; // Set the flag to true to prevent further teleportation
             }
         }
+        #endregion
     }
     #endregion
 
@@ -259,11 +405,6 @@ public class PlayerMovement : MonoBehaviour
     private void Run()
     {
         moveDirection *= runSpeed;
-    }
-
-    private void Jump()
-    {
-        velocity.y = Mathf.Sqrt(jumpHeight * -2 * gravityValue);
     }
 
     private void Idle() { }
