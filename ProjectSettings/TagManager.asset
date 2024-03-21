@@ -19,6 +19,7 @@ TagManager:
   - Bright Choice
   - Dark Choice
   - Key
+  - movingCorridor
   layers:
   - Default
   - TransparentFX

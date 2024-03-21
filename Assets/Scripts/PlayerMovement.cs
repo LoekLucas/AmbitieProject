@@ -28,6 +28,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] IsVisible IsVisible14;
     [SerializeField] IsVisible IsVisible15;
     [SerializeField] IsVisible IsVisible16;
+    [SerializeField] IsVisible IsVisible17;
+    [SerializeField] IsVisible IsVisible18;
 
     public GameObject removeableCube;
     public GameObject removeableFloor;
@@ -44,6 +46,8 @@ public class PlayerMovement : MonoBehaviour
     public GameObject removeableCube12;
     public GameObject removeableCube13;
     public GameObject removeableCube14;
+    public GameObject removeableCube15;
+    public GameObject removeableCube16;
 
 
 
@@ -55,7 +59,7 @@ public class PlayerMovement : MonoBehaviour
 
     private float gravityValue = -9.81f;
     private float tpDistance;
-    private bool playerUp = false;
+    public bool playerUp = false;
     public float playerLayerNew;
     public float playerLayer = 1;
     private bool isColliding;
@@ -372,6 +376,22 @@ public class PlayerMovement : MonoBehaviour
         }
         #endregion
 
+        if (tag == "movingCorridor")
+        {
+            tpAllowed = false;
+        }
+
+        if (tag == "movingCorridor" && hasKey)
+        {
+            GameObject.Destroy(removeableCube15);
+            internalTimer += Time.deltaTime;
+        }
+
+        if (tag == "movingCorridor" && internalTimer >= 10f)
+        {
+            internalTimer = 0;
+            TeleportPlayer(new Vector3(25.2197037f, -2998.42993f, -1.52000046f));
+        }
         #endregion
 
     }

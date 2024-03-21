@@ -20,7 +20,6 @@ public class MovingWall : MonoBehaviour
         if (movingWallVisible.objectVisible && distanceFromPlayer > 10f)
         {
             transform.position = new Vector3(player.transform.position.x + distanceFromPlayer, transform.position.y, transform.position.z);
-            Debug.Log("Wall is moving!");
         }
         else
         {
