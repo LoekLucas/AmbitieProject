@@ -376,22 +376,31 @@ public class PlayerMovement : MonoBehaviour
         }
         #endregion
 
+        #region Moving Corridor Logic
         if (tag == "movingCorridor")
         {
             tpAllowed = false;
+            if (hasKey)
+            {
+                Debug.Log("Works");
+                TeleportPlayer(new Vector3(25.2197037f, -2998.42993f, -1.52000046f));
+            }
         }
 
-        if (tag == "movingCorridor" && hasKey)
-        {
-            GameObject.Destroy(removeableCube15);
-            internalTimer += Time.deltaTime;
-        }
+        //if (!IsVisible15)
+        //{
+        //    Debug.Log("!IsVisible15");
+        //    if (IsVisible16)
+        //    {
+        //        Debug.Log("IsVisible16");
+        //        if (hasKey)
+        //        {
+        //            Debug.Log("hasKey");
+        //        }
+        //    }
+        //}
+        #endregion
 
-        if (tag == "movingCorridor" && internalTimer >= 10f)
-        {
-            internalTimer = 0;
-            TeleportPlayer(new Vector3(25.2197037f, -2998.42993f, -1.52000046f));
-        }
         #endregion
 
     }

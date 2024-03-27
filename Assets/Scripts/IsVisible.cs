@@ -1,28 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class IsVisible : MonoBehaviour
 {
     Renderer m_Renderer;
-
     public bool objectVisible;
-    
+
     void Start()
     {
         m_Renderer = GetComponent<Renderer>();
     }
 
-    // Update is called once per frame
-    void Update()
+    // Called when the object becomes visible to any camera
+    void OnBecameVisible()
     {
-        if (m_Renderer.isVisible)
-        {
-            objectVisible = true;
-        }
-        else
-        {
-            objectVisible = false;
-        }
+        objectVisible = true;
+    }
+
+    // Called when the object is no longer visible to any camera
+    void OnBecameInvisible()
+    {
+        objectVisible = false;
     }
 }
