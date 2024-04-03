@@ -30,6 +30,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] IsVisible IsVisible16;
     [SerializeField] IsVisible IsVisible17;
     [SerializeField] IsVisible IsVisible18;
+    [SerializeField] IsVisible isVisible19;
+    [SerializeField] IsVisible isVisible20;
 
     public GameObject removeableCube;
     public GameObject removeableFloor;
@@ -382,8 +384,7 @@ public class PlayerMovement : MonoBehaviour
             tpAllowed = false;
             if (hasKey)
             {
-                Debug.Log("Works");
-                TeleportPlayer(new Vector3(25.2197037f, -2998.42993f, -1.52000046f));
+                TeleportPlayer(new Vector3(84.7944031f, -2998.42017f, -1.64473557f));
             }
         }
 
@@ -399,6 +400,13 @@ public class PlayerMovement : MonoBehaviour
         //        }
         //    }
         //}
+        #endregion  
+
+        #region Big Door Logic
+        if (tag == "Big Door")
+        {
+            TeleportPlayer(new Vector3(-9.31221962f, -3426.68042f, -0.927093744f));
+        }
         #endregion
 
         #endregion
